@@ -30,3 +30,16 @@ def setup_logger(name='support-toolkit'):
     logger.addHandler(console_handler)
     
     return logger
+
+def log_command(command, output, error=None):
+    logger = setup_logger()
+    log_entry = {
+        'timestamp': datetime.now().isoformat(),
+        'command': command,
+        'output': output,
+        'error': error
+    }
+    logger.info(str(log_entry))
+    
+    if error:
+        logger.error(f"Command failed: {command} - {error}")
