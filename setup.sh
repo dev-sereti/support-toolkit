@@ -18,4 +18,12 @@ for pkg in "${REQUIRED_PKGS[@]}"; do
         apt-get install -y "$pkg"
     fi
 done
- 
+
+# Install Python dependencies
+pip3 install rich psutil python-telegram-bot
+
+# Create directories
+mkdir -p /var/log/support-toolkit
+mkdir -p /etc/support-toolkit
+mkdir -p /var/backups/support-toolkit
+
