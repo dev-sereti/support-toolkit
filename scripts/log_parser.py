@@ -56,3 +56,21 @@ def parse_log_file(log_file, show_critical=False):
     
     if show_critical:
         print(f"\nFound {critical_count} critical events in {log_path}")
+
+def archive_logs(days=30):
+    cutoff_date = datetime.now() - timedelta(days=days)
+    archived = 0
+    
+    for log_file in log_dir.glob('*.log'):
+        if log_file.stat().st_mtime < cutoff_date.timestamp():
+            archive_file = archive_dir / f"{log_file.name}-{datetime.now().strftime('%Y%m%d')}.gz"
+            
+            with open(log_file, 'rb') as f_in:
+                with gzip.open(archive_file, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            
+            log_file.unlink()
+            archived += 1
+            logger.info(f"Archived {log_file} to {archive_file}")
+    
+    print(f"Archived {archived} log files older than {days} days")
