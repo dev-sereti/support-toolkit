@@ -120,3 +120,14 @@ def handle_users(args):
     else:
         os.system('./scripts/user_mgmt.sh')
 
+def handle_logs(args):
+    """Handle log management commands"""
+    if args.parse:
+        os.system(f'python3 scripts/log_parser.py --file {args.parse}' + (' --critical' if args.critical else ''))
+    elif args.archive:
+        os.system('./scripts/log_parser.py --archive')
+    else:
+        os.system('python3 scripts/log_parser.py')
+
+if __name__ == '__main__':
+    main()
