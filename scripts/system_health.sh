@@ -29,3 +29,18 @@ elif (( mem_percent > MEM_WARNING )); then
 else
     echo "[OK] Memory usage: $mem_percent%" | tee -a $LOG_FILE
 fi
+
+# Check Disk usage
+disk_usage=$(df -h / | awk 'NR==2 {print $5}' | tr -d '%')
+if (( disk_usage > DISK_CRITICAL )); then
+    echo "[CRITICAL] Disk usage: $disk_usage%" | tee -a $LOG_FILE
+elif (( disk_usage > DISK_WARNING )); then
+    echo "[WARNING] Disk usage: $disk_usage%" | tee -a $LOG_FILE
+else
+    echo "[OK] Disk usage: $disk_usage%" | tee -a $LOG_FILE
+fi
+
+# System uptime
+uptime | tee -a $LOG_FILE
+
+exit 0
