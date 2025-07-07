@@ -33,3 +33,26 @@ CRITICAL_PATTERNS = {
         r'CPU throttling'
     ]
 }
+
+def parse_log_file(log_file, show_critical=False):
+    log_path = log_dir / log_file
+    if not log_path.exists():
+        print(f"Log file {log_path} not found")
+        return
+    
+    critical_count = 0
+    print(f"\nAnalyzing {log_path}...\n")
+    
+    with open(log_path, 'r') as f:
+        for line in f:
+            if show_critical:
+                for pattern in CRITICAL_PATTERNS.get(log_file.name, []):
+                    if re.search(pattern, line, re.IGNORECASE):
+                        print(f"[CRITICAL] {line.strip()}")
+                        critical_count += 1
+                        break
+            else:
+                print(line.strip())
+    
+    if show_critical:
+        print(f"\nFound {critical_count} critical events in {log_path}")
