@@ -74,3 +74,29 @@ def archive_logs(days=30):
             logger.info(f"Archived {log_file} to {archive_file}")
     
     print(f"Archived {archived} log files older than {days} days")
+
+def main():
+    parser = argparse.ArgumentParser(description='Log Parser Tool')
+    parser.add_argument('--file', choices=['auth', 'syslog', 'dmesg'], 
+                       help='Specify which log file to parse')
+    parser.add_argument('--critical', action='store_true', 
+                       help='Show only critical events')
+    parser.add_argument('--archive', action='store_true', 
+                       help='Archive logs older than 30 days')
+    
+    args = parser.parse_args()
+    
+    if args.archive:
+        archive_logs()
+    elif args.file:
+        log_file = {
+            'auth': 'auth.log',
+            'syslog': 'syslog',
+            'dmesg': 'dmesg'
+        }[args.file]
+        parse_log_file(Path(log_file), args.critical)
+    else:
+        print("Please specify a log file to parse with --file")
+
+if __name__ == '__main__':
+    main()
