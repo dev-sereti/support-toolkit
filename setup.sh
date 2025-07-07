@@ -27,3 +27,14 @@ mkdir -p /var/log/support-toolkit
 mkdir -p /etc/support-toolkit
 mkdir -p /var/backups/support-toolkit
 
+# Copy files
+cp -r scripts /usr/local/lib/support-toolkit/
+cp -r utils /usr/local/lib/support-toolkit/
+cp main.py /usr/local/bin/support-toolkit
+chmod +x /usr/local/bin/support-toolkit
+chmod +x /usr/local/lib/support-toolkit/scripts/*
+
+# Initialize configuration
+/usr/local/bin/support-toolkit --init-config
+
+echo "Installation complete. Run 'support-toolkit' to start."
