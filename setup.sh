@@ -1,40 +1,28 @@
 #!/bin/bash
 
-# Support Toolkit Setup Script
+# Updated Support Toolkit Setup Script
 
 echo "Installing Support Automation Toolkit..."
 
-# Check Python version
-if ! command -v python3 &> /dev/null; then
-    echo "Python 3 is required but not installed. Installing..."
-    apt-get update && apt-get install -y python3
+# Create virtual environment if not exists
+if [ ! -d "venv" ]; then
+    python3 -m venv venv
 fi
 
-# Check for required packages
-REQUIRED_PKGS=("python3-pip" "nmap" "rsync" "cron" "gzip")
-for pkg in "${REQUIRED_PKGS[@]}"; do
-    if ! dpkg -s "$pkg" &> /dev/null; then
-        echo "Installing $pkg..."
-        apt-get install -y "$pkg"
-    fi
-done
-
-# Install Python dependencies
-pip3 install rich psutil python-telegram-bot
+# Activate venv and install dependencies
+source venv/bin/activate
+pip install -r requirements.txt
 
 # Create directories
 mkdir -p /var/log/support-toolkit
-mkdir -p /etc/support-toolkit
-mkdir -p /var/backups/support-toolkit
+sudo chown $USER /var/log/support-toolkit  # Avoid sudo for logging
 
-# Copy files
-cp -r scripts /usr/local/lib/support-toolkit/
-cp -r utils /usr/local/lib/support-toolkit/
-cp main.py /usr/local/bin/support-toolkit
-chmod +x /usr/local/bin/support-toolkit
-chmod +x /usr/local/lib/support-toolkit/scripts/*
+# Make scripts executable
+chmod +x scripts/*.sh
 
-# Initialize configuration
-/usr/local/bin/support-toolkit --init-config
+# Create symlink for easy access
+ln -sf "$(pwd)/main.py" "$(pwd)/support-toolkit"
+chmod +x support-toolkit
 
-echo "Installation complete. Run 'support-toolkit' to start."
+echo "Installation complete. Run './support-toolkit' to start."
+echo "Always activate virtual environment first: source venv/bin/activate"
