@@ -54,3 +54,31 @@ def get_thresholds():
                 thresholds[key] = value
     
     return thresholds
+def set_thresholds(threshold_str):
+    """Update threshold values"""
+    updates = {}
+    for item in threshold_str.split(','):
+        key, value = item.split('=')
+        updates[key.upper()] = value
+    
+    # Read current thresholds
+    with open(THRESHOLDS_FILE, 'r') as f:
+        lines = f.readlines()
+    
+    # Update values
+    new_lines = []
+    for line in lines:
+        if '=' in line:
+            key = line.split('=')[0]
+            if key in updates:
+                new_lines.append(f"{key}={updates[key]}\n")
+            else:
+                new_lines.append(line)
+        else:
+            new_lines.append(line)
+    
+    # Write back
+    with open(THRESHOLDS_FILE, 'w') as f:
+        f.writelines(new_lines)
+    
+    print("Thresholds updated successfully")
