@@ -23,3 +23,34 @@ DEFAULT_THRESHOLDS = {
     'DISK_WARNING': '80',
     'DISK_CRITICAL': '95'
 }
+def load_config():
+    """Load or create configuration"""
+    if not CONFIG_DIR.exists():
+        CONFIG_DIR.mkdir(mode=0o755, parents=True)
+    
+    if not CONFIG_FILE.exists():
+        with open(CONFIG_FILE, 'w') as f:
+            config = configparser.ConfigParser()
+            config.read_dict(DEFAULT_CONFIG)
+            config.write(f)
+    
+    if not THRESHOLDS_FILE.exists():
+        with open(THRESHOLDS_FILE, 'w') as f:
+            for key, value in DEFAULT_THRESHOLDS.items():
+                f.write(f"{key}={value}\n")
+    
+    config = configparser.ConfigParser()
+    config.read(CONFIG_FILE)
+    
+    return config
+
+def get_thresholds():
+    """Get current threshold values"""
+    thresholds = {}
+    with open(THRESHOLDS_FILE, 'r') as f:
+        for line in f:
+            if '=' in line:
+                key, value = line.strip().split('=')
+                thresholds[key] = value
+    
+    return thresholds
