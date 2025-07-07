@@ -97,3 +97,26 @@ def handle_health(args):
         set_thresholds(args.set_thresholds)
     else:
         os.system('./scripts/system_health.sh')
+
+def handle_users(args):
+    """Handle user management commands"""
+    if hasattr(args, 'user_command'):
+        if args.user_command == 'list':
+            cmd = './scripts/user_mgmt.sh list'
+            if args.active:
+                cmd += ' --active'
+            elif args.inactive:
+                cmd += ' --inactive'
+            os.system(cmd)
+        elif args.user_command == 'modify':
+            cmd = f'./scripts/user_mgmt.sh modify {args.username}'
+            if args.lock:
+                cmd += ' --lock'
+            elif args.unlock:
+                cmd += ' --unlock'
+            elif args.reset_password:
+                cmd += ' --reset-password'
+            os.system(cmd)
+    else:
+        os.system('./scripts/user_mgmt.sh')
+
