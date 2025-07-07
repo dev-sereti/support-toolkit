@@ -10,7 +10,7 @@ DEFAULT_CONFIG = {
     'DEFAULT': {
         'backup_dir': '/var/backups',
         'retention_days': '30',
-        'notification_email': 'admin@example.com',
+        'notification_email': 'devsereti@gmail.com.com',
         'telegram_webhook': ''
     }
 }
