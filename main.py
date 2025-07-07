@@ -77,3 +77,23 @@ def main():
     except Exception as e:
         logger.error(f"Command failed: {str(e)}")
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
+
+def handle_health(args):
+    """Handle system health commands"""
+    if args.thresholds:
+        from utils.config import get_thresholds
+        thresholds = get_thresholds()
+        table = Table(title="System Thresholds")
+        table.add_column("Metric", style="cyan")
+        table.add_column("Warning", style="magenta")
+        table.add_column("Critical", style="red")
+        
+        for metric, values in thresholds.items():
+            table.add_row(metric.upper(), str(values['warning']), str(values['critical']))
+        
+        console.print(table)
+    elif args.set_thresholds:
+        from utils.config import set_thresholds
+        set_thresholds(args.set_thresholds)
+    else:
+        os.system('./scripts/system_health.sh')
