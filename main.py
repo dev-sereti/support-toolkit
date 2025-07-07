@@ -14,7 +14,7 @@ config = load_config()
 console = Console()
 
 def display_banner():
-    banner = """
+    banner = r"""
     [bold blue]
      _____ _____ ____  _____ _____ _   _ _______       _____ _   _ _______ _____ ____  _   _ 
     /  ___|  ___|  _ \|_   _|_   _| | | | | ___ \     |_   _| | | | | ___ \_   _/  _ \| \ | |
