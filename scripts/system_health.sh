@@ -16,3 +16,16 @@ elif (( $(echo "$cpu_usage > $CPU_WARNING" | bc -l) )); then
 else
     echo "[OK] CPU usage: $cpu_usage%" | tee -a $LOG_FILE
 fi
+
+# Check Memory usage
+mem_total=$(free -m | awk '/Mem:/ {print $2}')
+mem_used=$(free -m | awk '/Mem:/ {print $3}')
+mem_percent=$((mem_used * 100 / mem_total))
+
+if (( mem_percent > MEM_CRITICAL )); then
+    echo "[CRITICAL] Memory usage: $mem_percent%" | tee -a $LOG_FILE
+elif (( mem_percent > MEM_WARNING )); then
+    echo "[WARNING] Memory usage: $mem_percent%" | tee -a $LOG_FILE
+else
+    echo "[OK] Memory usage: $mem_percent%" | tee -a $LOG_FILE
+fi
