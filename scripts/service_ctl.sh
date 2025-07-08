@@ -56,3 +56,11 @@ service_action() {
     
     return $status
 }
+
+list_services() {
+    echo -e "${YELLOW}=== System Services ===${NC}"
+    systemctl list-unit-files --type=service --no-pager | head -n -3
+    
+    echo -e "\n${YELLOW}=== Running Services ===${NC}"
+    systemctl list-units --type=service --state=running --no-pager | head -n -7
+}
