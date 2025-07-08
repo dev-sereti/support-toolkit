@@ -59,3 +59,16 @@ clean_orphans() {
         echo -e "${RED}Failed to clean orphaned packages${NC}"
     fi
 }
+
+# Function to check for available updates
+check_updates() {
+    echo -e "${YELLOW}Checking for available updates...${NC}"
+    updates=$(apt-get upgrade -s | grep "^Inst")
+    if [ -z "$updates" ]; then
+        echo -e "${GREEN}System is up to date${NC}"
+    else
+        echo -e "${YELLOW}Available updates:${NC}"
+        echo "$updates"
+    fi
+}
+
