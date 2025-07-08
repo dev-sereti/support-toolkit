@@ -64,3 +64,42 @@ list_services() {
     echo -e "\n${YELLOW}=== Running Services ===${NC}"
     systemctl list-units --type=service --state=running --no-pager | head -n -7
 }
+
+monitor_services() {
+    echo -e "${YELLOW}Monitoring essential services...${NC}"
+    services=("sshd" "nginx" "postgresql" "redis")
+    
+    for service in "${services[@]}"; do
+        if ! systemctl is-active --quiet "$service"; then
+            echo -e "${RED}$service is down! Attempting to restart...${NC}"
+            systemctl restart "$service"
+            log "Restarted crashed service: $service"
+        fi
+    done
+}
+
+case "$1" in
+    list)
+        list_services
+        ;;
+    monitor)
+        monitor_services
+        ;;
+    action)
+        if [ -z "$2" ] || [ -z "$3" ]; then
+            echo -e "${RED}Usage: $0 action <service> {start|stop|restart|status|enable|disable}${NC}"
+            exit 1
+        fi
+        service_action "$2" "$3"
+        ;;
+    *)
+        echo -e "${YELLOW}Usage: $0 {list|monitor|action} [options]${NC}"
+        echo -e "Commands:"
+        echo -e "  list                     - List all services"
+        echo -e "  monitor                  - Monitor essential services"
+        echo -e "  action <service> <cmd>   - Control a service"
+        exit 1
+        ;;
+esac
+
+exit 0
