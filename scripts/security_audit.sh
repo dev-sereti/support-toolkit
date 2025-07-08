@@ -54,3 +54,24 @@ full_audit() {
     check_sudo_users
     echo -e "${GREEN}Audit completed. Results saved to $AUDIT_FILE${NC}"
 }
+
+case "$1" in
+    suid)
+        check_suid
+        ;;
+    ports)
+        check_open_ports
+        ;;
+    logins)
+        check_login_history
+        ;;
+    full)
+        full_audit
+        ;;
+    *)
+        echo -e "${YELLOW}Usage: $0 {suid|ports|logins|full}${NC}"
+        exit 1
+        ;;
+esac
+
+exit 0
