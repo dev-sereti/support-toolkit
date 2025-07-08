@@ -72,3 +72,12 @@ check_updates() {
     fi
 }
 
+# Function to search for a package
+search_package() {
+    if [ -z "$1" ]; then
+        echo -e "${RED}Please specify a package name to search${NC}"
+        exit 1
+    fi
+    echo -e "${YELLOW}Searching for package: $1${NC}"
+    apt-cache search "$1"
+}
