@@ -81,3 +81,39 @@ search_package() {
     echo -e "${YELLOW}Searching for package: $1${NC}"
     apt-cache search "$1"
 }
+
+# Main menu
+case "$1" in
+    update)
+        update_packages
+        ;;
+    upgrade)
+        update_packages
+        upgrade_system
+        ;;
+    security)
+        security_updates
+        ;;
+    clean)
+        clean_orphans
+        ;;
+    check)
+        check_updates
+        ;;
+    search)
+        search_package "$2"
+        ;;
+    *)
+        echo -e "${YELLOW}Usage: $0 {update|upgrade|security|clean|check|search <package>}${NC}"
+        echo -e "Options:"
+        echo -e "  update      - Update package lists"
+        echo -e "  upgrade     - Upgrade all packages"
+        echo -e "  security    - Install security updates only"
+        echo -e "  clean       - Remove orphaned packages"
+        echo -e "  check       - Check for available updates"
+        echo -e "  search      - Search for a package"
+        exit 1
+        ;;
+esac
+
+exit 0
