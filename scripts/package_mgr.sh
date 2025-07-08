@@ -38,3 +38,13 @@ upgrade_system() {
     fi
 }
 
+# Function to install security updates
+security_updates() {
+    echo -e "${YELLOW}Checking for security updates...${NC}"
+    apt-get upgrade --only-upgrade -y $(apt-get upgrade --dry-run | grep "^Inst" | grep -i security | awk '{print $2}')
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}Security updates applied successfully${NC}"
+    else
+        echo -e "${RED}No security updates available or failed to apply${NC}"
+    fi
+}
