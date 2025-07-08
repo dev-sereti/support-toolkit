@@ -34,3 +34,8 @@ check_open_ports() {
     echo -e "\n${YELLOW}=== Open Ports ===${NC}"
     ss -tulnp | tee -a "$AUDIT_FILE"
 }
+
+check_login_history() {
+    echo -e "\n${YELLOW}=== Failed Login Attempts ===${NC}"
+    grep "Failed password" /var/log/auth.log | tail -n 20 | tee -a "$AUDIT_FILE"
+}
