@@ -39,3 +39,8 @@ check_login_history() {
     echo -e "\n${YELLOW}=== Failed Login Attempts ===${NC}"
     grep "Failed password" /var/log/auth.log | tail -n 20 | tee -a "$AUDIT_FILE"
 }
+
+check_sudo_users() {
+    echo -e "\n${YELLOW}=== Users with Sudo Privileges ===${NC}"
+    grep -Po '^sudo.+:\K.*$' /etc/group | tee -a "$AUDIT_FILE"
+}
