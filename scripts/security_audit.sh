@@ -44,3 +44,13 @@ check_sudo_users() {
     echo -e "\n${YELLOW}=== Users with Sudo Privileges ===${NC}"
     grep -Po '^sudo.+:\K.*$' /etc/group | tee -a "$AUDIT_FILE"
 }
+
+full_audit() {
+    echo -e "${YELLOW}Starting Security Audit...${NC}"
+    check_suid
+    check_passwd_perms
+    check_open_ports
+    check_login_history
+    check_sudo_users
+    echo -e "${GREEN}Audit completed. Results saved to $AUDIT_FILE${NC}"
+}
