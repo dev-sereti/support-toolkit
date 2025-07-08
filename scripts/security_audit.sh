@@ -29,3 +29,8 @@ check_passwd_perms() {
         fi
     done
 }
+
+check_open_ports() {
+    echo -e "\n${YELLOW}=== Open Ports ===${NC}"
+    ss -tulnp | tee -a "$AUDIT_FILE"
+}
