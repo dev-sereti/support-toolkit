@@ -22,7 +22,6 @@ def display_banner():
 ╚════██║██║   ██║██╔═══╝ ██╔═══╝ ██║   ██║██╔═══╝    ██║          ██║   ██║   ██║██║   ██║██╔═██╗ ██║   ██║   
 ███████║╚██████╔╝██║     ██║     ╚██████╔╝██║        ██║          ██║   ╚██████╔╝╚██████╔╝██║  ██╗██║   ██║   
 ╚══════╝ ╚═════╝ ╚═╝     ╚═╝      ╚═════╝ ╚═╝        ╚═╝          ╚═╝    ╚═════╝  ╚═════╝ ╚═╝  ╚═╝╚═╝   ╚═╝   
-
     [/bold blue]
     """
     print(banner)
@@ -59,7 +58,11 @@ def main():
     log_parser.add_argument('--critical', action='store_true', help='Show only critical events')
     log_parser.add_argument('--archive', action='store_true', help='Archive logs')
     
-    # Add other command parsers...
+    # Network Diagnostics
+    network_parser = subparsers.add_parser('network', help='Network diagnostics')
+    network_parser.add_argument('--speedtest', action='store_true', help='Run internet speed test')
+    network_parser.add_argument('--ports', action='store_true', help='Show open ports only')
+    network_parser.add_argument('--interfaces', action='store_true', help='Show network interfaces only')
     
     args = parser.parse_args()
     
@@ -74,7 +77,8 @@ def main():
             handle_users(args)
         elif args.command == 'logs':
             handle_logs(args)
-        # Add other command handlers...
+        elif args.command == 'network':
+            handle_network(args)
     except Exception as e:
         logger.error(f"Command failed: {str(e)}")
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
@@ -129,6 +133,17 @@ def handle_logs(args):
         os.system('./scripts/log_parser.py --archive')
     else:
         os.system('python3 scripts/log_parser.py')
+
+def handle_network(args):
+    """Handle network diagnostics commands"""
+    cmd = './scripts/network_diag.sh'
+    if args.speedtest:
+        cmd += ' --speedtest'
+    elif args.ports:
+        cmd += ' --ports'
+    elif args.interfaces:
+        cmd += ' --interfaces'
+    os.system(cmd)
 
 if __name__ == '__main__':
     main()
