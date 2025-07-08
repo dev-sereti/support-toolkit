@@ -25,3 +25,16 @@ update_packages() {
         exit 1
     fi
 }
+
+# Function to upgrade all packages
+upgrade_system() {
+    echo -e "${YELLOW}Upgrading installed packages...${NC}"
+    apt-get upgrade -y
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}System upgraded successfully${NC}"
+    else
+        echo -e "${RED}Failed to upgrade system${NC}"
+        exit 1
+    fi
+}
+
