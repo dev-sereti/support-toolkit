@@ -48,3 +48,14 @@ security_updates() {
         echo -e "${RED}No security updates available or failed to apply${NC}"
     fi
 }
+
+# Function to clean up orphaned packages
+clean_orphans() {
+    echo -e "${YELLOW}Cleaning up orphaned packages...${NC}"
+    apt-get autoremove -y
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}Orphaned packages cleaned successfully${NC}"
+    else
+        echo -e "${RED}Failed to clean orphaned packages${NC}"
+    fi
+}
