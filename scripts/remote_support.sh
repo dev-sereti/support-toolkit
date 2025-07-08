@@ -48,3 +48,40 @@ pull_logs() {
     
     echo -e "${GREEN}Logs saved to $LOCAL_LOG_DIR/remote-logs-$(date +%Y%m%d).tar.gz${NC}"
 }
+
+batch_command() {
+    if [ -z "$1" ] || [ -z "$2" ]; then
+        echo -e "${RED}Usage: $0 <hostfile> <command>${NC}"
+        return 1
+    fi
+
+    hostfile=$1
+    command=$2
+
+    while read -r host; do
+        echo -e "\n${YELLOW}=== $host ===${NC}"
+        ssh -n -t "$host" "$command"
+    done < "$hostfile"
+}
+
+case "$1" in
+    cmd)
+        remote_command "$2" "$3"
+        ;;
+    logs)
+        pull_logs "$2" "$3"
+        ;;
+    batch)
+        batch_command "$2" "$3"
+        ;;
+    *)
+        echo -e "${YELLOW}Usage: $0 {cmd|logs|batch} [options]${NC}"
+        echo -e "Commands:"
+        echo -e "  cmd <user@host> <command>  - Execute command on remote host"
+        echo -e "  logs <user@host> [path]    - Pull logs from remote host"
+        echo -e "  batch <hostfile> <command> - Run command on multiple hosts"
+        exit 1
+        ;;
+esac
+
+exit 0
