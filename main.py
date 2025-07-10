@@ -194,3 +194,12 @@ def handle_pkg(args):
         cmd += f' {args.package}'
     os.system(cmd)
 
+def handle_remote(args):
+    """Handle remote support commands"""
+    if args.remote_command == 'cmd':
+        os.system(f'./scripts/remote_support.sh cmd "{args.host}" "{args.command}"')
+    elif args.remote_command == 'logs':
+        os.system(f'./scripts/remote_support.sh logs "{args.host}" "{args.path}"')
+    elif args.remote_command == 'batch':
+        os.system(f'./scripts/remote_support.sh batch "{args.hostfile}" "{args.command}"')
+
