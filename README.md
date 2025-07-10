@@ -30,7 +30,7 @@ The Support Automation Toolkit is a comprehensive CLI-based system administratio
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/your-repo/support-toolkit.git
+   git clone https://github.com/dev-sereti/support-toolkit.git
    cd support-toolkit
    ```
 
