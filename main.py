@@ -203,3 +203,7 @@ def handle_remote(args):
     elif args.remote_command == 'batch':
         os.system(f'./scripts/remote_support.sh batch "{args.hostfile}" "{args.command}"')
 
+def handle_audit(args):
+    """Handle security audits"""
+    os.system(f'./scripts/security_audit.sh {args.type}')
+
