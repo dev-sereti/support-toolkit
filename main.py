@@ -64,6 +64,40 @@ def main():
     network_parser.add_argument('--ports', action='store_true', help='Show open ports only')
     network_parser.add_argument('--interfaces', action='store_true', help='Show network interfaces only')
     
+    # Package Management
+    pkg_parser = subparsers.add_parser('pkg', help='Package management')
+    pkg_parser.add_argument('action', choices=['update', 'upgrade', 'security', 'clean', 'check', 'search'],
+                           help='Package management action')
+    pkg_parser.add_argument('--package', help='Package name for search action')
+    
+    # Remote Support
+    remote_parser = subparsers.add_parser('remote', help='Remote support tools')
+    remote_subparsers = remote_parser.add_subparsers(dest='remote_command')
+    remote_cmd_parser = remote_subparsers.add_parser('cmd', help='Execute remote command')
+    remote_cmd_parser.add_argument('host', help='user@host')
+    remote_cmd_parser.add_argument('command', help='Command to execute')
+    remote_logs_parser = remote_subparsers.add_parser('logs', help='Pull remote logs')
+    remote_logs_parser.add_argument('host', help='user@host')
+    remote_logs_parser.add_argument('--path', help='Remote log path', default='/var/log')
+    remote_batch_parser = remote_subparsers.add_parser('batch', help='Batch command')
+    remote_batch_parser.add_argument('hostfile', help='File with list of hosts')
+    remote_batch_parser.add_argument('command', help='Command to execute')
+    
+    # Security Audit
+    audit_parser = subparsers.add_parser('audit', help='Security audits')
+    audit_parser.add_argument('type', choices=['suid', 'ports', 'logins', 'full'], 
+                             help='Type of audit to perform')
+    
+    # Service Control
+    service_parser = subparsers.add_parser('service', help='Service management')
+    service_subparsers = service_parser.add_subparsers(dest='service_command')
+    service_list_parser = service_subparsers.add_parser('list', help='List services')
+    service_monitor_parser = service_subparsers.add_parser('monitor', help='Monitor services')
+    service_action_parser = service_subparsers.add_parser('action', help='Service actions')
+    service_action_parser.add_argument('name', help='Service name')
+    service_action_parser.add_argument('action', choices=['start', 'stop', 'restart', 'status', 'enable', 'disable'],
+                                     help='Action to perform')
+    
     args = parser.parse_args()
     
     if not args.command:
@@ -79,6 +113,14 @@ def main():
             handle_logs(args)
         elif args.command == 'network':
             handle_network(args)
+        elif args.command == 'pkg':
+            handle_pkg(args)
+        elif args.command == 'remote':
+            handle_remote(args)
+        elif args.command == 'audit':
+            handle_audit(args)
+        elif args.command == 'service':
+            handle_service(args)
     except Exception as e:
         logger.error(f"Command failed: {str(e)}")
         console.print(f"[bold red]Error:[/bold red] {str(e)}")
@@ -145,5 +187,10 @@ def handle_network(args):
         cmd += ' --interfaces'
     os.system(cmd)
 
-if __name__ == '__main__':
-    main()
+def handle_pkg(args):
+    """Handle package management commands"""
+    cmd = f'sudo ./scripts/package_mgr.sh {args.action}'
+    if args.action == 'search' and args.package:
+        cmd += f' {args.package}'
+    os.system(cmd)
+
