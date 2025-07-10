@@ -207,3 +207,14 @@ def handle_audit(args):
     """Handle security audits"""
     os.system(f'./scripts/security_audit.sh {args.type}')
 
+def handle_service(args):
+    """Handle service management"""
+    if args.service_command == 'list':
+        os.system('./scripts/service_ctl.sh list')
+    elif args.service_command == 'monitor':
+        os.system('./scripts/service_ctl.sh monitor')
+    elif args.service_command == 'action':
+        os.system(f'./scripts/service_ctl.sh action "{args.name}" "{args.action}"')
+
+if __name__ == '__main__':
+    main()
