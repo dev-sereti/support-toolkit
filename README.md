@@ -1,28 +1,5 @@
 # Support Automation Toolkit
 
-## Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Installation Steps](#installation-steps)
-- [Usage](#usage)
-  - [Basic Commands](#basic-commands)
-  - [System Health](#system-health)
-  - [User Management](#user-management)
-  - [Log Management](#log-management)
-  - [Network Diagnostics](#network-diagnostics)
-  - [Package Management](#package-management)
-  - [Remote Support](#remote-support)
-  - [Security Audits](#security-audits)
-  - [Service Control](#service-control)
-- [Configuration](#configuration)
-- [Logging](#logging)
-- [Scheduled Tasks](#scheduled-tasks)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Contributing](#contributing)
-
 ## Overview
 
 The Support Automation Toolkit is a comprehensive CLI-based system administration tool designed for IT support engineers. It provides complete system monitoring and management capabilities for Linux systems through an intuitive command-line interface.
