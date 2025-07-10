@@ -1,17 +1,42 @@
 # Support Automation Toolkit
 
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Installation Steps](#installation-steps)
+- [Usage](#usage)
+  - [Basic Commands](#basic-commands)
+  - [System Health](#system-health)
+  - [User Management](#user-management)
+  - [Log Management](#log-management)
+  - [Network Diagnostics](#network-diagnostics)
+  - [Package Management](#package-management)
+  - [Remote Support](#remote-support)
+  - [Security Audits](#security-audits)
+  - [Service Control](#service-control)
+- [Configuration](#configuration)
+- [Logging](#logging)
+- [Scheduled Tasks](#scheduled-tasks)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+- [Contributing](#contributing)
+
 ## Overview
 
-The Support Automation Toolkit is a CLI-based system administration tool designed for IT support engineers. It provides comprehensive system monitoring, user management, log analysis, network diagnostics, and automation capabilities for Linux systems.
+The Support Automation Toolkit is a comprehensive CLI-based system administration tool designed for IT support engineers. It provides complete system monitoring and management capabilities for Linux systems through an intuitive command-line interface.
 
 ## Features
 
-- **System Health Monitoring**: CPU, RAM, disk usage, and uptime tracking
-- **User Management**: Add/remove/lock/unlock users, password resets
-- **Log Analysis**: Parse system logs with critical event highlighting
-- **Network Diagnostics**: Connectivity checks, speed tests, port scanning
-- **Automation**: Scheduled tasks and alerts
-- **Security Audits**: Permission checks and system hardening
+- **System Health Monitoring**: Real-time CPU, RAM, disk usage, and uptime tracking
+- **User Management**: Complete user account control and activity monitoring
+- **Log Analysis**: Advanced log parsing with critical event detection
+- **Network Diagnostics**: Comprehensive connectivity and performance testing
+- **Package Management**: System updates and security patching
+- **Remote Support**: Secure remote command execution and log collection
+- **Security Audits**: System hardening checks and vulnerability detection
+- **Service Control**: Automated service monitoring and recovery
 
 ## Installation
 
@@ -19,7 +44,10 @@ The Support Automation Toolkit is a CLI-based system administration tool designe
 
 - Python 3.8+
 - Linux system (Debian/Ubuntu recommended)
-- Basic system utilities: `iproute2`, `net-tools`, `curl`
+- Basic system utilities:
+  ```bash
+  sudo apt install iproute2 net-tools curl nmap sshpass
+  ```
 
 ### Installation Steps
 
@@ -42,8 +70,7 @@ The Support Automation Toolkit is a CLI-based system administration tool designe
 
 4. **Make scripts executable**:
    ```bash
-   chmod +x scripts/*.sh
-   chmod +x setup.sh
+   chmod +x scripts/*.sh setup.sh
    ```
 
 5. **Run setup**:
@@ -51,9 +78,9 @@ The Support Automation Toolkit is a CLI-based system administration tool designe
    ./setup.sh
    ```
 
-6. **Install optional dependencies** (recommended):
+6. **Install optional tools**:
    ```bash
-   sudo apt install speedtest-cli nmap
+   sudo apt install speedtest-cli
    ```
 
 ## Usage
@@ -64,108 +91,214 @@ The Support Automation Toolkit is a CLI-based system administration tool designe
 # Show help menu
 support-toolkit --help
 
-# Check system health
+# Display system information
 support-toolkit health
 
-# Manage users
+# List active users
+support-toolkit users list --active
+```
+
+### System Health
+
+```bash
+# Check current status
+support-toolkit health
+
+# Set custom thresholds
+support-toolkit health --set-thresholds "cpu=85,mem=80,disk=90"
+
+# View current thresholds
+support-toolkit health --thresholds
+```
+
+### User Management
+
+```bash
+# List all users
 support-toolkit users list
+
+# Lock user account
 support-toolkit users modify <username> --lock
 
-# Analyze logs
-support-toolkit logs --parse auth --critical
-
-# Network diagnostics
-support-toolkit network
-support-toolkit network --speedtest
-```
-
-### Common Operations
-
-**1. System Monitoring**:
-```bash
-# Check current system status
-support-toolkit health
-
-# Set custom thresholds (CPU=85%, MEM=80%, DISK=90%)
-support-toolkit health --set-thresholds "cpu=85,mem=80,disk=90"
-```
-
-**2. User Management**:
-```bash
-# List inactive users
-support-toolkit users list --inactive
-
 # Reset password
-support-toolkit users modify johndoe --reset-password
+support-toolkit users modify <username> --reset-password
 ```
 
-**3. Network Diagnostics**:
+### Log Management
+
+```bash
+# Analyze auth log
+support-toolkit logs --parse auth
+
+# Archive old logs
+support-toolkit logs --archive
+
+# Show critical events
+support-toolkit logs --parse syslog --critical
+```
+
+### Network Diagnostics
+
 ```bash
 # Full network check
 support-toolkit network
 
-# Just test internet speed
+# Run speed test
 support-toolkit network --speedtest
 
 # Show open ports
 support-toolkit network --ports
 ```
 
-### Scheduling Tasks
+### Package Management
 
-To schedule regular health checks (runs hourly):
 ```bash
-(crontab -l 2>/dev/null; echo "0 * * * * /path/to/support-toolkit health >> /var/log/support-toolkit/health.log") | crontab -
+# Update packages
+support-toolkit pkg update
+
+# Upgrade system
+support-toolkit pkg upgrade
+
+# Security updates
+support-toolkit pkg security
+
+# Clean orphans
+support-toolkit pkg clean
+```
+
+### Remote Support
+
+```bash
+# Execute remote command
+support-toolkit remote cmd user@host "df -h"
+
+# Pull remote logs
+support-toolkit remote logs user@host --path /var/log
+
+# Batch command
+support-toolkit remote batch hosts.txt "apt update"
+```
+
+### Security Audits
+
+```bash
+# Check SUID/SGID files
+support-toolkit audit suid
+
+# Scan open ports
+support-toolkit audit ports
+
+# Full system audit
+support-toolkit audit full
+```
+
+### Service Control
+
+```bash
+# List services
+support-toolkit service list
+
+# Monitor services
+support-toolkit service monitor
+
+# Manage services
+support-toolkit service action nginx restart
 ```
 
 ## Configuration
 
-Configuration files are stored in `/etc/support-toolkit/`:
-- `config.ini`: Main configuration
-- `thresholds.conf`: Alert thresholds
+Configuration files are located in `/etc/support-toolkit/`:
 
-To modify configurations:
+| File              | Description                          |
+|-------------------|--------------------------------------|
+| `config.ini`      | Main application configuration       |
+| `thresholds.conf` | Health monitoring thresholds         |
+| `services.conf`   | Essential services configuration     |
+
+Edit configurations with:
 ```bash
 sudo nano /etc/support-toolkit/config.ini
 ```
 
-## Logs
+## Logging
 
-The tool logs to:
-- `/var/log/support-toolkit/toolkit.log`: Main application log
-- `/var/log/support-toolkit/system-health-*.log`: Health check results
-- `/var/log/support-toolkit/network-*.log`: Network test results
+Log files are stored in `/var/log/support-toolkit/`:
+
+| File                          | Contents                              |
+|-------------------------------|---------------------------------------|
+| `toolkit.log`                 | Main application log                  |
+| `health-<date>.log`           | System health reports                 |
+| `security-audit-<date>.log`   | Security audit results                |
+| `remote-logs-<date>.tar.gz`   | Archived remote logs                  |
+
+## Scheduled Tasks
+
+Example cron jobs for automation:
+
+```bash
+# Daily health check at 2am
+0 2 * * * /path/to/support-toolkit health >> /var/log/support-toolkit/health.log
+
+# Weekly security audit on Mondays
+0 3 * * 1 /path/to/support-toolkit audit full >> /var/log/support-toolkit/security-audit.log
+
+# Hourly service monitoring
+0 * * * * /path/to/support-toolkit service monitor
+```
 
 ## Troubleshooting
 
-**Permission Errors**:
-```bash
-sudo mkdir -p /var/log/support-toolkit
-sudo chown $USER /var/log/support-toolkit
-```
+**Common Issues and Solutions**:
 
-**Missing Dependencies**:
-```bash
-sudo apt install python3-venv python3-pip
-```
+1. **Permission Errors**:
+   ```bash
+   sudo mkdir -p /var/log/support-toolkit
+   sudo chown -R $USER /var/log/support-toolkit
+   ```
 
-**Virtual Environment Issues**:
-```bash
-deactivate
-rm -rf venv/
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-```
+2. **Missing Dependencies**:
+   ```bash
+   sudo apt install python3-venv python3-pip nmap speedtest-cli sshpass
+   ```
+
+3. **Virtual Environment Issues**:
+   ```bash
+   deactivate
+   rm -rf venv/
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+4. **Network Diagnostics Failures**:
+   ```bash
+   sudo apt install net-tools iproute2 nmap
+   ```
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT License - See [LICENSE](LICENSE) file for details.
 
 ## Contributing
 
-Contributions are welcome! Please submit pull requests or open issues on our GitHub repository.
+We welcome contributions! Please follow these guidelines:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin feature/your-feature`)
+5. Open a pull request
+
+For major changes, please open an issue first to discuss your proposed changes.
 
 ---
 
-**Note**: Always run the tool from within the virtual environment (`source venv/bin/activate`) for proper functionality.
+**Note**: Always activate the virtual environment before use:
+```bash
+source venv/bin/activate
+```
+
+For production deployments, consider using:
+```bash
+sudo ./setup.sh --install-system-wide
+```
