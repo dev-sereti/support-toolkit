@@ -82,6 +82,8 @@ def main():
     remote_batch_parser = remote_subparsers.add_parser('batch', help='Batch command')
     remote_batch_parser.add_argument('hostfile', help='File with list of hosts')
     remote_batch_parser.add_argument('command', help='Command to execute')
+    # Add new command
+    tui_parser = subparsers.add_parser('tui', help='Launch Terminal UI')
     
     # Security Audit
     audit_parser = subparsers.add_parser('audit', help='Security audits')
@@ -169,7 +171,7 @@ def handle_users(args):
 
 def handle_logs(args):
     """Handle log management commands"""
-    
+
     if args.parse:
         os.system(f'python3 scripts/log_parser.py --file {args.parse}' + (' --critical' if args.critical else ''))
     elif args.archive:
