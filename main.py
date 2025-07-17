@@ -8,10 +8,14 @@ import sys
 import os
 from utils.logger import setup_logger
 from utils.config import load_config
+from incident_reporter import IncidentReporter
+import incident_commands
+from incident_tui import IncidentTUI  # New import for TUI
 
 logger = setup_logger()
 config = load_config()
 console = Console()
+incident_reporter = IncidentReporter()  # Initialize incident reporter
 
 def display_banner():
     banner = r"""
@@ -82,8 +86,21 @@ def main():
     remote_batch_parser = remote_subparsers.add_parser('batch', help='Batch command')
     remote_batch_parser.add_argument('hostfile', help='File with list of hosts')
     remote_batch_parser.add_argument('command', help='Command to execute')
-    # Add new command
+    
+    # Incident Management
+    incident_parser = subparsers.add_parser('incident', help='Incident management')
+    incident_subparsers = incident_parser.add_subparsers(dest='incident_command')
+    report_parser = incident_subparsers.add_parser('report', help='Report new incident')
+    report_parser.add_argument('title', help='Incident title')
+    report_parser.add_argument('description', help='Incident description')
+    report_parser.add_argument('--severity', choices=['critical','high','medium','low'], default='medium')
+    list_parser = incident_subparsers.add_parser('list', help='List incidents')
+    list_parser.add_argument('--days', type=int, default=7, help='Lookback period in days')
+    list_parser.add_argument('--severity', choices=['critical','high','medium','low'], help='Filter by severity')
+    
+    # TUI Interface
     tui_parser = subparsers.add_parser('tui', help='Launch Terminal UI')
+    tui_parser.add_argument('--refresh', type=int, default=5, help='Refresh interval in seconds')
     
     # Security Audit
     audit_parser = subparsers.add_parser('audit', help='Security audits')
@@ -119,6 +136,10 @@ def main():
             handle_pkg(args)
         elif args.command == 'remote':
             handle_remote(args)
+        elif args.command == 'incident':
+            handle_incident(args)
+        elif args.command == 'tui':
+            launch_tui(args)
         elif args.command == 'audit':
             handle_audit(args)
         elif args.command == 'service':
@@ -171,7 +192,6 @@ def handle_users(args):
 
 def handle_logs(args):
     """Handle log management commands"""
-
     if args.parse:
         os.system(f'python3 scripts/log_parser.py --file {args.parse}' + (' --critical' if args.critical else ''))
     elif args.archive:
@@ -205,6 +225,45 @@ def handle_remote(args):
         os.system(f'./scripts/remote_support.sh logs "{args.host}" "{args.path}"')
     elif args.remote_command == 'batch':
         os.system(f'./scripts/remote_support.sh batch "{args.hostfile}" "{args.command}"')
+
+def handle_incident(args):
+    """Handle incident management commands"""
+    if args.incident_command == 'report':
+        result = incident_reporter.log_incident(
+            args.title,
+            args.description,
+            args.severity
+        )
+        console.print(f"[green]Incident logged:[/green] {result}")
+    elif args.incident_command == 'list':
+        report = incident_reporter.generate_report(args.days, args.severity)
+        table = Table(title=f"Incidents (Last {args.days} days)")
+        
+        table.add_column("Timestamp", style="cyan")
+        table.add_column("Title", style="magenta")
+        table.add_column("Severity", style="red")
+        table.add_column("Status")
+        
+        for incident in report['incidents']:
+            table.add_row(
+                incident['timestamp'],
+                incident['title'],
+                incident['severity'],
+                incident['status']
+            )
+        
+        console.print(table)
+
+def launch_tui(args):
+    """Launch Terminal UI for incidents"""
+    try:
+        from textual.cli import run
+        run(IncidentTUI)
+    except ImportError:
+        console.print("[red]Error: Textual not installed. Run 'pip install textual'[/red]")
+    except Exception as e:
+        logger.error(f"TUI failed: {str(e)}")
+        console.print(f"[red]Error launching TUI: {str(e)}[/red]")
 
 def handle_audit(args):
     """Handle security audits"""
