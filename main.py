@@ -169,6 +169,7 @@ def handle_users(args):
 
 def handle_logs(args):
     """Handle log management commands"""
+    
     if args.parse:
         os.system(f'python3 scripts/log_parser.py --file {args.parse}' + (' --critical' if args.critical else ''))
     elif args.archive:
