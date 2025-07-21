@@ -1,12 +1,12 @@
-# incident_tui.py
 from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Header, Footer
-import json
 import os
+import json
+
+# Add this line at the top (same path as in incident_reporter.py)
+INCIDENT_DIR = "/var/log/support-toolkit/incidents"
 
 class IncidentTUI(App):
-    """Terminal-based incident browser"""
-    
     CSS_PATH = "incident_tui.css"
     BINDINGS = [("q", "quit", "Quit")]
     
@@ -17,11 +17,14 @@ class IncidentTUI(App):
     
     def on_mount(self) -> None:
         table = self.query_one(DataTable)
-        table.add_columns("Time", "Title", "Severity", "Status")
+        table.add_columns("Timestamp", "Title", "Severity", "Status")
         
-        for file in os.listdir(INCIDENT_DIR):
-            if file.endswith('.json'):
-                with open(f"{INCIDENT_DIR}/{file}") as f:
+        # Create directory if missing
+        os.makedirs(INCIDENT_DIR, exist_ok=True)
+        
+        for filename in os.listdir(INCIDENT_DIR):
+            if filename.endswith('.json'):
+                with open(os.path.join(INCIDENT_DIR, filename)) as f:
                     incident = json.load(f)
                     table.add_row(
                         incident['timestamp'],
@@ -29,3 +32,7 @@ class IncidentTUI(App):
                         incident['severity'],
                         incident['status']
                     )
+
+if __name__ == "__main__":
+    app = IncidentTUI()
+    app.run()
